@@ -38,6 +38,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "CharacterCamera")
 	USpringArmComponent* SpringArm;
 
+	/* Sphere of influence used to determine what actors abilities can be used on. */
+	UPROPERTY(VisibleAnywhere, Category = "CharacterDetection")
+	USphereComponent* SphereOfInfluence;
+
 	/************************************************************/
 	/* Camera.                                                  */
 	/************************************************************/
@@ -67,4 +71,20 @@ private:
 
 	/* Moves the pawn along its right vector. */
 	void MoveRight(float AxisValue);
+
+	/************************************************************/
+	/* Targeting and Detection.                                 */
+	/************************************************************/
+
+	/* Sphere of influence radius. */
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterDetection")
+	float InfluenceRadius;
+
+	/* What happens when a component overlaps the player's sphere of influence. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	/* What happens when a component leaves the player's sphere of influence. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
