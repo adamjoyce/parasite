@@ -14,6 +14,18 @@ public:
 	/* Sets default values for this character's properties. */
 	APlayerCharacter();
 
+	/************************************************************/
+	/* Targeting and Detection.                                 */
+	/************************************************************/
+
+	/* Get the currently highlighted interactive actor. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	AActor* GetCurrentInteractiveActor();
+
+	/* Updates the currently highlighted interactive actor. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	void SetCurrentInteractiveActor(AActor* NewInteractiveActor);
+
 protected:
 
 private:
@@ -80,11 +92,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterDetection")
 	float InfluenceRadius;
 
-	/* What happens when a component overlaps the player's sphere of influence. */
-	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	/* The currently highlighted interactive actor. */
+	AActor* CurrentInteractiveActor;
 
-	/* What happens when a component leaves the player's sphere of influence. */
+	/* The player amalgamates (merges) with the current interactive actor. */
 	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void Amalgamate();
 };

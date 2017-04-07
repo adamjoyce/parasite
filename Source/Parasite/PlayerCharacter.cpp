@@ -8,7 +8,8 @@ APlayerCharacter::APlayerCharacter() : CameraHeight(2000.0f),
 									   CameraRotation(FRotator(-60.0f, 0.0f, 0.0f)),
 									   CameraLagSpeed(3.0f),
 									   MovementSpeed(2000.0f),
-									   InfluenceRadius(200.0f)
+									   InfluenceRadius(200.0f),
+									   CurrentInteractiveActor(nullptr)
 {
 	/// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,24 +40,18 @@ void APlayerCharacter::BeginPlay()
 	SpringArm->TargetArmLength = CameraHeight;
 	GetCharacterMovement()->MaxWalkSpeed = MovementSpeed;
 	SphereOfInfluence->SetSphereRadius(InfluenceRadius);
-
-	/// Bind the component overlap delegates for the sphere of influence.
-	if (SphereOfInfluence)
-	{
-		SphereOfInfluence->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapBegin);
-		SphereOfInfluence->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnOverlapEnd);
-	}
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
+
+	InputComponent->BindAction("Amalgamate", IE_Pressed, this, &APlayerCharacter::Amalgamate);
 
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
@@ -80,19 +75,22 @@ void APlayerCharacter::MoveRight(float AxisValue)
 	}
 }
 
-void APlayerCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+void APlayerCharacter::Amalgamate()
 {
-	if (OtherActor != nullptr && OtherActor != this && OtherActor->ActorHasTag(TEXT("Interactive")))
+	if (CurrentInteractiveActor != nullptr && ((GetActorLocation() - CurrentInteractiveActor->GetActorLocation()).Size()) <= InfluenceRadius)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ENTERED"));
+		/// Merge the player with the interactive actor.
+		UE_LOG(LogTemp, Warning, TEXT("AMALGAMATE"));
 	}
 }
 
-void APlayerCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+AActor* APlayerCharacter::GetCurrentInteractiveActor()
 {
-	if (OtherActor != nullptr && OtherActor != this && OtherActor->ActorHasTag(TEXT("Interactive")))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EXITED"));
-	}
+	return CurrentInteractiveActor;
+}
+
+void APlayerCharacter::SetCurrentInteractiveActor(AActor* NewInteractiveActor)
+{
+	CurrentInteractiveActor = NewInteractiveActor;
 }
 

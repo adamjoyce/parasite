@@ -1,6 +1,7 @@
 // Copyright Adam Joyce 2017.  All rights reserved.
 
 #include "Parasite.h"
+#include "PlayerCharacter.h"
 #include "InteractiveObject.h"
 
 
@@ -48,16 +49,28 @@ void AInteractiveObject::BeginPlay()
 
 void AInteractiveObject::OnMouseOver(UPrimitiveComponent* TouchedComponent)
 {
-	if (HighlightMesh)
+	if (GetWorld() && HighlightMesh != nullptr)
 	{
+		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (PlayerCharacter != nullptr && PlayerCharacter->GetCurrentInteractiveActor() != this)
+		{
+			PlayerCharacter->SetCurrentInteractiveActor(this);
+		}
+
 		HighlightMesh->SetVisibility(true);
 	}
 }
 
 void AInteractiveObject::EndMouseOver(UPrimitiveComponent* TouchedComponent)
 {
-	if (HighlightMesh)
+	if (GetWorld() && HighlightMesh != nullptr)
 	{
+		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (PlayerCharacter != nullptr)
+		{
+			PlayerCharacter->SetCurrentInteractiveActor(nullptr);
+		}
+
 		HighlightMesh->SetVisibility(false);
 	}
 }
