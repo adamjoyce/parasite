@@ -13,6 +13,7 @@ ABaseCharacter::ABaseCharacter() : Health(100.0f),
 
 	/// Create the destructible mesh component.
 	DestructibleMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("DestructibleMesh"));
+	DestructibleMesh->SetRelativeScale3D(FVector(0.7f, 0.7f, 0.7f));
 	DestructibleMesh->SetupAttachment(RootComponent);
 }
 

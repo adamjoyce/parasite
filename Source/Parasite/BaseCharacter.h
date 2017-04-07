@@ -32,7 +32,7 @@ protected:
 	/************************************************************/
 
 	/* Fractures on character death. */
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterComponents")
+	UPROPERTY(VisibleAnywhere, Category = "CharacterComponents")
 	UDestructibleComponent* DestructibleMesh;
 
 	/************************************************************/
