@@ -23,6 +23,7 @@ AInteractiveObject::AInteractiveObject()
 	HighlightMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
 	HighlightMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HighlightMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	HighlightMesh->SetCastShadow(false);
 	HighlightMesh->SetVisibility(false);
 	HighlightMesh->SetupAttachment(RootComponent);
 
@@ -52,9 +53,9 @@ void AInteractiveObject::OnMouseOver(UPrimitiveComponent* TouchedComponent)
 	if (GetWorld() && HighlightMesh != nullptr)
 	{
 		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		if (PlayerCharacter != nullptr && PlayerCharacter->GetCurrentInteractiveActor() != this)
+		if (PlayerCharacter != nullptr && PlayerCharacter->GetHighlightedActor() != this)
 		{
-			PlayerCharacter->SetCurrentInteractiveActor(this);
+			PlayerCharacter->SetHighlightedActor(this);
 		}
 
 		HighlightMesh->SetVisibility(true);
@@ -68,7 +69,7 @@ void AInteractiveObject::EndMouseOver(UPrimitiveComponent* TouchedComponent)
 		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		if (PlayerCharacter != nullptr)
 		{
-			PlayerCharacter->SetCurrentInteractiveActor(nullptr);
+			PlayerCharacter->SetHighlightedActor(nullptr);
 		}
 
 		HighlightMesh->SetVisibility(false);

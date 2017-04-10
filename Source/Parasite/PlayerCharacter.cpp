@@ -9,7 +9,9 @@ APlayerCharacter::APlayerCharacter() : CameraHeight(2000.0f),
 									   CameraLagSpeed(3.0f),
 									   MovementSpeed(2000.0f),
 									   InfluenceRadius(200.0f),
-									   CurrentInteractiveActor(nullptr)
+									   IsAmalgamated(false),
+									   HighlightedActor(nullptr),
+									   AmalgamatedActor(nullptr)
 {
 	/// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,6 +29,7 @@ APlayerCharacter::APlayerCharacter() : CameraHeight(2000.0f),
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
 	/// The player's sphere of influence.
+	/// Currently used for visual representation.
 	SphereOfInfluence = CreateDefaultSubobject<USphereComponent>(TEXT("SphereOfInfluence"));
 	SphereOfInfluence->InitSphereRadius(InfluenceRadius);
 	SphereOfInfluence->SetupAttachment(RootComponent);
@@ -45,6 +48,14 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (AmalgamatedActor)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *AmalgamatedActor->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NULLPTR"));
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -60,37 +71,64 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 void APlayerCharacter::MoveForward(float AxisValue)
 {
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	if (MovementComponent)
+	if (MovementComponent && AxisValue != 0.0f)
 	{
 		MovementComponent->AddInputVector(GetActorForwardVector() * AxisValue);
+
+		/// Resets the amalgamation actor and flag.
+		if (IsAmalgamated)
+		{
+			Seperate();
+		}
 	}
 }
 
 void APlayerCharacter::MoveRight(float AxisValue)
 {
 	UCharacterMovementComponent* MovementComponent = GetCharacterMovement();
-	if (MovementComponent)
+	if (MovementComponent && AxisValue != 0.0f)
 	{
 		MovementComponent->AddInputVector(GetActorRightVector() * AxisValue);
+
+		/// Resets the amalgamation actor and flag.
+		if (IsAmalgamated)
+		{
+			Seperate();
+		}
 	}
 }
 
 void APlayerCharacter::Amalgamate()
 {
-	if (CurrentInteractiveActor != nullptr && ((GetActorLocation() - CurrentInteractiveActor->GetActorLocation()).Size()) <= InfluenceRadius)
+	if (HighlightedActor != nullptr && ((GetActorLocation() - HighlightedActor->GetActorLocation()).Size()) <= InfluenceRadius)
 	{
+		if (!IsAmalgamated)
+		{
+			IsAmalgamated = true;
+		}
+
+		AmalgamatedActor = HighlightedActor;
+
 		/// Merge the player with the interactive actor.
+		//SetActorLocation(HighlightedFVector(-10.0f, 0.0f, 0.0f))
+		//AttachRootComponentTo(CurrentInteractiveActor->GetRootComponent());
 		UE_LOG(LogTemp, Warning, TEXT("AMALGAMATE"));
 	}
 }
 
-AActor* APlayerCharacter::GetCurrentInteractiveActor()
+void APlayerCharacter::Seperate()
 {
-	return CurrentInteractiveActor;
+	IsAmalgamated = false;
+	AmalgamatedActor = nullptr;
 }
 
-void APlayerCharacter::SetCurrentInteractiveActor(AActor* NewInteractiveActor)
+AActor* APlayerCharacter::GetHighlightedActor()
 {
-	CurrentInteractiveActor = NewInteractiveActor;
+	return HighlightedActor;
+}
+
+void APlayerCharacter::SetHighlightedActor(AActor* NewHighlightedActor)
+{
+	HighlightedActor = NewHighlightedActor;
 }
 

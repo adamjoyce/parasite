@@ -20,11 +20,11 @@ public:
 
 	/* Get the currently highlighted interactive actor. */
 	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
-	AActor* GetCurrentInteractiveActor();
+	AActor* GetHighlightedActor();
 
 	/* Updates the currently highlighted interactive actor. */
 	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
-	void SetCurrentInteractiveActor(AActor* NewInteractiveActor);
+	void SetHighlightedActor(AActor* NewHighlightedActor);
 
 protected:
 
@@ -51,6 +51,7 @@ private:
 	USpringArmComponent* SpringArm;
 
 	/* Sphere of influence used to determine what actors abilities can be used on. */
+	/* Currently only used for visual radius. */
 	UPROPERTY(VisibleAnywhere, Category = "CharacterDetection")
 	USphereComponent* SphereOfInfluence;
 
@@ -92,10 +93,20 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterDetection")
 	float InfluenceRadius;
 
+	/* If the character is currently merged with another actor. */
+	bool IsAmalgamated;
+
 	/* The currently highlighted interactive actor. */
-	AActor* CurrentInteractiveActor;
+	AActor* HighlightedActor;
+
+	/* The actor the player is currently merged with. */
+	AActor* AmalgamatedActor;
 
 	/* The player amalgamates (merges) with the current interactive actor. */
 	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
 	void Amalgamate();
+
+	/* Called when the player moves out of a previously amalgamated actor. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	void Seperate();
 };
