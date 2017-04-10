@@ -26,6 +26,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
 	void SetHighlightedActor(AActor* NewHighlightedActor);
 
+	/* Get the currently highlighted interactive actor. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	AActor* GetAmalgamatedActor();
+
+	/* Updates the currently highlighted interactive actor. */
+	UFUNCTION(BlueprintCallable, Category = "CharacterDetection")
+	void SetAmalgamatedActor(AActor* NewAmalgamatedActor);
+
 protected:
 
 private:

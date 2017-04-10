@@ -132,3 +132,13 @@ void APlayerCharacter::SetHighlightedActor(AActor* NewHighlightedActor)
 	HighlightedActor = NewHighlightedActor;
 }
 
+AActor* APlayerCharacter::GetAmalgamatedActor()
+{
+	return AmalgamatedActor;
+}
+
+void APlayerCharacter::SetAmalgamatedActor(AActor* NewAmalgamatedActor)
+{
+	AmalgamatedActor = NewAmalgamatedActor;
+}
+

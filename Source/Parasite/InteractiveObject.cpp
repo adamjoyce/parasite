@@ -53,12 +53,11 @@ void AInteractiveObject::OnMouseOver(UPrimitiveComponent* TouchedComponent)
 	if (GetWorld() && HighlightMesh != nullptr)
 	{
 		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-		if (PlayerCharacter != nullptr && PlayerCharacter->GetHighlightedActor() != this)
+		if (PlayerCharacter != nullptr && PlayerCharacter->GetHighlightedActor() != this && PlayerCharacter->GetAmalgamatedActor() != this)
 		{
 			PlayerCharacter->SetHighlightedActor(this);
+			HighlightMesh->SetVisibility(true);
 		}
-
-		HighlightMesh->SetVisibility(true);
 	}
 }
 
