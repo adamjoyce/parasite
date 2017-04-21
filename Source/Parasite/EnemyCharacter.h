@@ -26,4 +26,11 @@ public:
 	/* The behviour this bot will execute (passive/patrol/...). */
 	UPROPERTY(EditAnywhere, Category = "CharacterAI")
 	EBotBehaviorType BotType;
+
+	/************************************************************/
+	/* AI Setup                                                 */
+	/************************************************************/
+
+	/* Change the default bot type during gameplay. */
+	//void SetBotType(EBotBehaviorType NewType);
 };

@@ -2,6 +2,7 @@
 
 #include "Parasite.h"
 #include "EnemyCharacter.h"
+#include "EnemyAIController.h"
 
 
 AEnemyCharacter::AEnemyCharacter() : BehaviorTree(nullptr),
@@ -11,3 +12,13 @@ AEnemyCharacter::AEnemyCharacter() : BehaviorTree(nullptr),
 	PrimaryActorTick.bCanEverTick = true;
 
 }
+
+//void AEnemyCharacter::SetBotType(EBotBehaviorType NewType)
+//{
+//	BotType = NewType;
+//	AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
+//	if (AIController)
+//	{
+//		AIController->SetBlackboardBotType(NewType);
+//	}
+//}
